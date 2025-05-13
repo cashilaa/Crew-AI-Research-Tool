@@ -1,0 +1,20 @@
+linkedin_task:
+  description: >
+    Search LinkedIn and return founder profile URL(s).
+  expected_output: >
+    A list of valid https://www.linkedin.com/in/... links.
+  agent: linkedin_researcher
+
+company_info_task:
+  description: >
+    Collect company mission, founding year, HQ location and core product lines.
+  expected_output: >
+    A 150-word markdown paragraph with citations.
+  agent: company_info_analyst
+
+website_task:
+  description: >
+    Provide the official website (or GitHub repo for OSS orgs).
+  expected_output: >
+    A single https:// URL.
+  agent: website_finder
