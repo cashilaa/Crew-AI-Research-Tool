@@ -1,5 +1,5 @@
 from crew import CompanyResearchCrew
-import json, sys, csv, argparse
+import json, sys, argparse
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -55,32 +55,52 @@ def research_company(founder_name, company_name):
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-def process_csv(csv_file, output_file, max_workers=3):
+def process_json_list(json_file, output_file, max_workers=3, start_index=0, end_index=None):
     """
-    Process a CSV file with founder and company information
+    Process a JSON file with founder and company information
     """
-    founders_companies = []
+    # Read the JSON file
+    with open(json_file, 'r', encoding='utf-8') as file:
+        data = json.load(file)
     
-    # Read the CSV file
-    with open(csv_file, 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        header = next(reader)  # Skip header row
-        
-        # Find the founder and company columns
-        founder_idx = header.index('Founder Name') if 'Founder Name' in header else 0
-        company_idx = header.index('Company Name') if 'Company Name' in header else 1
-        
-        for row in reader:
-            if len(row) > max(founder_idx, company_idx):
-                founders_companies.append((row[founder_idx], row[company_idx]))
+    # Slice the data if needed
+    if end_index is None:
+        end_index = len(data)
+    
+    data_to_process = data[start_index:end_index]
+    
+    # Extract founder and company information
+    founders_companies = []
+    for item in data_to_process:
+        if "name" in item and "company" in item:
+            founders_companies.append((item["name"], item["company"]))
     
     results = []
+    
+    # Load existing results if the output file exists
+    if os.path.exists(output_file):
+        try:
+            with open(output_file, 'r', encoding='utf-8') as f:
+                results = json.load(f)
+            print(f"Loaded {len(results)} existing results from {output_file}")
+        except Exception as e:
+            print(f"Error loading existing results: {str(e)}")
+    
+    # Create a set of already processed founders and companies
+    processed = {(r["founder_name"], r["company_name"]) for r in results}
+    
+    # Filter out already processed items
+    to_process = [(f, c) for f, c in founders_companies if (f, c) not in processed]
+    
+    print(f"Found {len(founders_companies)} entries in the JSON file")
+    print(f"Already processed {len(processed)} entries")
+    print(f"Will process {len(to_process)} new entries")
     
     # Process in parallel with a limited number of workers
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_founder = {
             executor.submit(research_company, founder, company): (founder, company) 
-            for founder, company in founders_companies
+            for founder, company in to_process
         }
         
         for future in as_completed(future_to_founder):
@@ -100,33 +120,18 @@ def process_csv(csv_file, output_file, max_workers=3):
     return results
 
 def main():
-    parser = argparse.ArgumentParser(description='Research companies and their founders')
+    parser = argparse.ArgumentParser(description='Research companies and their founders from a JSON list')
     
-    # Create a mutually exclusive group for input methods
-    input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument('--csv', type=str, help='CSV file with founder and company information')
-    input_group.add_argument('--founder', type=str, help='Founder name')
-    
-    parser.add_argument('--company', type=str, help='Company name (required when using --founder)')
+    parser.add_argument('--input', type=str, default='list.json', help='Input JSON file with founder and company information')
     parser.add_argument('--output', type=str, default='research_results.json', help='Output JSON file')
     parser.add_argument('--workers', type=int, default=3, help='Maximum number of parallel workers')
+    parser.add_argument('--start', type=int, default=0, help='Start index in the JSON list')
+    parser.add_argument('--end', type=int, default=None, help='End index in the JSON list')
     
     args = parser.parse_args()
     
-    if args.founder and not args.company:
-        parser.error("--company is required when using --founder")
-    
-    if args.csv:
-        # Process a CSV file
-        results = process_csv(args.csv, args.output, args.workers)
-    else:
-        # Process a single founder and company
-        result = research_company(args.founder, args.company)
-        results = [result]
-        
-        # Save the result to a JSON file
-        with open(args.output, 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=2)
+    # Process the JSON list
+    results = process_json_list(args.input, args.output, args.workers, args.start, args.end)
     
     print(f"Research completed. Results saved to {args.output}")
     

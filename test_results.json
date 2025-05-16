@@ -1,0 +1,26 @@
+[
+  {
+    "founder_name": "Josh Clawson",
+    "company_name": "Ox AI",
+    "linkedin": "Not found",
+    "about": "Ox AI is a technology company that specializes in developing artificial intelligence solutions aimed at enhancing productivity and user experience across various sectors. Founded in 2022, Ox AI is headquartered in San Francisco, California. The company's core product lines focus on AI-powered tools that streamline tasks in customer support and digital marketing, providing businesses with intelligent automation solutions to optimize workflows. Their mission is to \"empower businesses by harnessing the power of AI to innovate and improve operational efficiency.\" This mission reflects their commitment to integrating advanced technologies into everyday business processes to drive growth and scalability (source: company filings and press releases). Their innovative approach positions them as a key player in the evolving AI landscape, aiming to make complex tasks simpler and more efficient for users globally (source: Crunchbase, press releases).",
+    "website": "https://www.oxai.com",
+    "timestamp": "2025-05-13 20:51:50"
+  },
+  {
+    "founder_name": "Henri Virta",
+    "company_name": "Y4 Works Oy",
+    "linkedin": "[\"https://fi.linkedin.com/in/henri-virta\"]",
+    "about": "Y4 Works Oy, founded in 2022, is headquartered in Vantaa, Finland. The company focuses on providing innovative software solutions geared towards enhancing operational efficiency for businesses. Y4 Works Oy specializes in developing tailored software products that cater to various industries, including manufacturing and logistics. The mission of Y4 Works Oy is to empower businesses through digital transformation, utilizing advanced technology to streamline operations and drive growth. Their core product lines encompass custom software development, cloud solutions, and data analytics services. Y4 Works Oy aims to foster collaboration and connectivity between systems, ensuring seamless workflows and improved performance for its clients. For more information, you can refer to the profile of Henri Virta, one of the key figures at the company, on LinkedIn [here](https://fi.linkedin.com/in/henri-virta).",
+    "website": "https://www.y4worksoy.com",
+    "timestamp": "2025-05-13 20:52:09"
+  },
+  {
+    "founder_name": "Jakob Werner",
+    "company_name": "Upper",
+    "linkedin": "[\"https://www.linkedin.com/in/jakob-f-werner\"]",
+    "about": "Upper is a technology-driven company founded in 2020, headquartered in Berlin, Germany. The mission of Upper is to revolutionize the logistics and delivery sector by utilizing data science and machine learning to optimize routes and improve efficiency in last-mile delivery. The company focuses on enhancing urban mobility solutions by providing a platform that streamlines delivery processes for businesses and consumers alike. Upper's core product lines include Advanced Route Optimization, Real-Time Tracking, and Analytics Dashboard, which help clients maximize their operational efficiency while reducing costs and environmental impact (LinkedIn, 2023). By leveraging innovative technology, Upper aims to transform the way consumers and businesses approach deliveries in urban settings, ultimately contributing to smarter city development and sustainability efforts (Crunchbase, 2023).  \n[LinkedIn](https://www.linkedin.com/in/jakob-f-werner) | [Crunchbase](https://www.crunchbase.com)",
+    "website": "https://www.upperroom.org/",
+    "timestamp": "2025-05-13 20:52:21"
+  }
+]

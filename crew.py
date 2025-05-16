@@ -1,6 +1,6 @@
 from crewai import Agent, Task, Crew, Process
 from typing import List, Dict, Any
-from tools.linkedin_scraper import LinkedInScraper
+from tools.linkedin_scraper_new import LinkedInScraper
 from tools.website_scraper import WebsiteScraper
 
 class CompanyResearchCrew:
