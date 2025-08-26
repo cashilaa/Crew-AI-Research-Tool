@@ -1,67 +1,67 @@
 from crewai import Agent, Task, Crew, Process
 from typing import List, Dict, Any
-from tools.linkedin_scraper_new import LinkedInScraper
-from tools.website_scraper import WebsiteScraper
+from tools.brella_scraper import BrellaScraper
 
-class CompanyResearchCrew:
-    """Company Research Crew for finding information about companies and founders"""
+class BrellaResearchCrew:
+    """Brella Research Crew for finding information on Brella.io website"""
     
     def __init__(self):
         # Create agents
-        self.linkedin_agent = Agent(
-            role="LinkedIn Research Specialist",
-            goal="Find public LinkedIn profile URLs for founders and companies",
-            backstory="OSINT professional fluent in advanced LinkedIn search operators.",
-            tools=[LinkedInScraper()],
+        self.event_agent = Agent(
+            role="Brella Event Specialist",
+            goal="Find event information on Brella.io",
+            backstory="Expert in discovering and analyzing networking events on Brella.io platform.",
+            tools=[BrellaScraper()],
             verbose=True
         )
         
-        self.info_agent = Agent(
-            role="Company Information Analyst",
-            goal="Compile a concise overview of companies",
-            backstory="Analyst experienced with official filings, press releases and Crunchbase data.",
+        self.company_agent = Agent(
+            role="Brella Company Analyst",
+            goal="Research companies participating in Brella events",
+            backstory="Analyst specialized in gathering information about companies using the Brella platform.",
+            tools=[BrellaScraper()],
             verbose=True
         )
         
-        self.site_agent = Agent(
-            role="Website Finder",
-            goal="Locate the verified corporate domain for companies",
-            backstory="Guru of WHOIS look-ups and result-ranking heuristics.",
-            tools=[WebsiteScraper()],
+        self.networking_agent = Agent(
+            role="Brella Networking Specialist",
+            goal="Analyze networking opportunities on Brella.io",
+            backstory="Expert in identifying valuable networking connections and opportunities on Brella.",
+            tools=[BrellaScraper()],
             verbose=True
         )
         
         # Create tasks
-        self.linkedin_task = Task(
-            description="Search LinkedIn and return founder profile URL(s) for {founder_name} of {company_name}.",
-            expected_output="A list of valid https://www.linkedin.com/in/... links.",
-            agent=self.linkedin_agent
+        self.event_task = Task(
+            description="Search Brella.io for information about events related to {search_term}. Use category 'events'.",
+            expected_output="A detailed JSON report about events, including dates, locations, and descriptions.",
+            agent=self.event_agent
         )
         
-        self.company_info_task = Task(
-            description="Collect company mission, founding year, HQ location and core product lines for {company_name}.",
-            expected_output="A 150-word markdown paragraph with citations.",
-            agent=self.info_agent
+        self.company_task = Task(
+            description="Find companies on Brella.io related to {search_term}. Use category 'companies'.",
+            expected_output="A JSON list of companies with their profiles and participation in Brella events.",
+            agent=self.company_agent
         )
         
-        self.website_task = Task(
-            description="Provide the official website (or GitHub repo for OSS orgs) for {company_name}.",
-            expected_output="A single https:// URL.",
-            agent=self.site_agent
+        self.networking_task = Task(
+            description="Analyze networking opportunities on Brella.io for {search_term}. Use category 'networking'.",
+            expected_output="A comprehensive report on networking features and opportunities available.",
+            agent=self.networking_agent
         )
     
     def crew(self):
-        """Creates the company research crew"""
+        """Creates the Brella research crew"""
         return Crew(
             agents=[
-                self.linkedin_agent,
-                self.info_agent,
-                self.site_agent
+                self.event_agent,
+                self.company_agent,
+                self.networking_agent
             ],
             tasks=[
-                self.linkedin_task,
-                self.company_info_task,
-                self.website_task
+                self.event_task,
+                self.company_task,
+                self.networking_task
             ],
             process=Process.sequential,
             verbose=True
