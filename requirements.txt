@@ -1,9 +1,9 @@
+pysqlite3-binary
 crewai
-crewai_tools
+python-dotenv
 requests
 beautifulsoup4
-python-dotenv
-gspread
-oauth2client
-pandas
-streamlit
+lxml
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
