@@ -10,7 +10,7 @@ load_dotenv()
 
 # Page config
 st.set_page_config(
-    page_title="Brella Event Intelligence",
+    page_title="Brella Event Scrapper",
     page_icon="🌐",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -54,7 +54,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<h1 class="main-header">🌐 Brella Event Intelligence</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">🌐 Brella Event Scrapper</h1>', unsafe_allow_html=True)
 st.markdown("### Discover founders, investors, and networking opportunities at Brella events")
 
 # Sidebar
@@ -62,7 +62,7 @@ with st.sidebar:
     st.markdown("## 🔧 Search Configuration")
     
     # Search parameters
-    search_term = st.text_input("🔍 Event/Company Name", placeholder="e.g., Mashup 2025, TechCrunch Disrupt")
+    search_term = st.text_input("🔍 Event/Company Name", placeholder="e.g., TechCrunch Disrupt")
     
     category = st.selectbox(
         "📂 Search Category",
