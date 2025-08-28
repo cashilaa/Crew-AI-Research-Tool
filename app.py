@@ -54,7 +54,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<h1 class="main-header">🌐 Brella Event Scrapper</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header"> Brella Event Scrapper</h1>', unsafe_allow_html=True)
 st.markdown("### Discover founders, investors, and networking opportunities at Brella events")
 
 # Sidebar
