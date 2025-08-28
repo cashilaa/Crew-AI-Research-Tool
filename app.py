@@ -10,7 +10,7 @@ load_dotenv()
 
 # Page config
 st.set_page_config(
-    page_title="Brella Event Scrapper",
+    page_title="Brella Event Scraper",
     page_icon="🌐",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -54,7 +54,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<h1 class="main-header"> Brella Event Scrapper</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header"> Brella Event Scraper</h1>', unsafe_allow_html=True)
 st.markdown("### Discover founders, investors, and networking opportunities at Brella events")
 
 # Sidebar
@@ -226,7 +226,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666; padding: 2rem;'>
-        <p>🌐 <strong>Brella Event Intelligence</strong> | Powered by CrewAI & OpenAI</p>
+        <p>🌐 <strong>Brella Event scraper</strong> | Powered by CrewAI & OpenAI</p>
         <p>Discover networking opportunities and connect with founders, investors, and industry leaders</p>
     </div>
     """, 
