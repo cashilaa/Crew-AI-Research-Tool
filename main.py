@@ -1,16 +1,13 @@
-# Fix SQLite compatibility issue
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# Fix SQLite compatibility issue for ChromaDB
+import os
+os.environ["ALLOW_RESET"] = "TRUE"
 
 from crew import BrellaResearchCrew
-import json, sys, csv, argparse
+import json, csv, argparse
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tools.google_sheets_exporter import GoogleSheetsExporter
 from tools.google_sheets_exporter import GoogleSheetsExporter
 
 load_dotenv()
@@ -47,14 +44,10 @@ def research_brella(search_term, category="all", attendee_type="founders"):
     Research information on Brella.io based on search term and category
     """
     print(f"Researching '{search_term}' in category '{category}' on Brella.io...")
-    print(f"Researching '{search_term}' in category '{category}' on Brella.io...")
     
     try:
         crew_instance = BrellaResearchCrew()
-        crew_instance = BrellaResearchCrew()
         crew = crew_instance.crew()
-        
-        search_with_category = f"{search_term} (category: {category})"
         
         search_with_category = f"{search_term} (category: {category})"
         
@@ -78,7 +71,6 @@ def research_brella(search_term, category="all", attendee_type="founders"):
         return output
     except Exception as e:
         print(f"Error researching '{search_term}' on Brella.io: {str(e)}")
-        print(f"Error researching '{search_term}' on Brella.io: {str(e)}")
         return {
             "search_term": search_term,
             "category": category,
@@ -94,14 +86,11 @@ def research_brella(search_term, category="all", attendee_type="founders"):
 def process_csv(csv_file, output_file, max_workers=3):
     """
     Process a CSV file with search terms and categories
-    Process a CSV file with search terms and categories
     """
-    search_items = []
     search_items = []
     
     with open(csv_file, 'r', encoding='utf-8') as file:
         reader = csv.reader(file)
-        header = next(reader)  
         header = next(reader)  
         
         term_idx = header.index('Search Term') if 'Search Term' in header else 0
@@ -138,13 +127,12 @@ def process_csv(csv_file, output_file, max_workers=3):
     return results
 
 def main():
-    parser = argparse.ArgumentParser(description='Research information on Brella.io')
+    global sheets_exporter
+    
     parser = argparse.ArgumentParser(description='Research information on Brella.io')
     
     # Create a mutually exclusive group for input methods
     input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument('--csv', type=str, help='CSV file with search terms and categories')
-    input_group.add_argument('--term', type=str, help='Search term')
     input_group.add_argument('--csv', type=str, help='CSV file with search terms and categories')
     input_group.add_argument('--term', type=str, help='Search term')
     
@@ -156,10 +144,6 @@ def main():
                         help='Type of people to find at events (default: founders)')
     parser.add_argument('--output', type=str, default='brella_results.json', help='Output JSON file')
     parser.add_argument('--workers', type=int, default=3, help='Maximum number of parallel workers')
-    parser.add_argument('--sheets', action='store_true', help='Export results to Google Sheets')
-    parser.add_argument('--spreadsheet', type=str, default='Brella Research Results', help='Google Spreadsheet name (when not using URL)')
-    parser.add_argument('--spreadsheet-url', type=str, help='Direct URL to a Google Spreadsheet')
-    parser.add_argument('--worksheet', type=str, help='Google Worksheet name (defaults to current date)')
     parser.add_argument('--sheets', action='store_true', help='Export results to Google Sheets')
     parser.add_argument('--spreadsheet', type=str, default='Brella Research Results', help='Google Spreadsheet name (when not using URL)')
     parser.add_argument('--spreadsheet-url', type=str, help='Direct URL to a Google Spreadsheet')
@@ -178,7 +162,6 @@ def main():
     
     print(f"Research completed. Results saved to {args.output}")
     
-    global sheets_exporter
     should_export_to_sheets = args.sheets or (sheets_exporter is not None and os.getenv("GOOGLE_SPREADSHEET_URL"))
     
     if should_export_to_sheets:
@@ -186,7 +169,6 @@ def main():
             if not sheets_exporter:
                 sheets_exporter = GoogleSheetsExporter(spreadsheet_url=args.spreadsheet_url)
             else:
-           
                 sheets_exporter.spreadsheet_url = args.spreadsheet_url
                 sheets_exporter.spreadsheet_id = sheets_exporter._extract_spreadsheet_id(args.spreadsheet_url)
             
@@ -198,11 +180,8 @@ def main():
             print("Use --spreadsheet-url parameter or set GOOGLE_SPREADSHEET_URL in .env file")
             print("Results will not be exported to Google Sheets")
             
-      
         if sheets_exporter:
-        
             if sheets_exporter.authenticate():
-               
                 spreadsheet_url = sheets_exporter.export_to_sheet(
                     results, 
                     args.spreadsheet, 
@@ -215,46 +194,6 @@ def main():
                     print("Failed to export results to Google Sheets")
             else:
                 print("Failed to authenticate with Google Sheets API")
-    
-    
-    global sheets_exporter
-    should_export_to_sheets = args.sheets or (sheets_exporter is not None and os.getenv("GOOGLE_SPREADSHEET_URL"))
-    
-    if should_export_to_sheets:
-        if args.spreadsheet_url:
-            if not sheets_exporter:
-                sheets_exporter = GoogleSheetsExporter(spreadsheet_url=args.spreadsheet_url)
-            else:
-           
-                sheets_exporter.spreadsheet_url = args.spreadsheet_url
-                sheets_exporter.spreadsheet_id = sheets_exporter._extract_spreadsheet_id(args.spreadsheet_url)
-            
-            print(f"Exporting results to Google Sheets at URL: {args.spreadsheet_url}")
-        elif sheets_exporter:
-            print(f"Exporting results to Google Sheets using URL from .env file")
-        else:
-            print("Error: No Google Sheets URL or credentials provided.")
-            print("Use --spreadsheet-url parameter or set GOOGLE_SPREADSHEET_URL in .env file")
-            print("Results will not be exported to Google Sheets")
-            
-      
-        if sheets_exporter:
-        
-            if sheets_exporter.authenticate():
-               
-                spreadsheet_url = sheets_exporter.export_to_sheet(
-                    results, 
-                    args.spreadsheet, 
-                    args.worksheet
-                )
-                
-                if spreadsheet_url:
-                    print(f"Results exported successfully to Google Sheets: {spreadsheet_url}")
-                else:
-                    print("Failed to export results to Google Sheets")
-            else:
-                print("Failed to authenticate with Google Sheets API")
-    
     
     print("\nSummary:")
     for result in results:
