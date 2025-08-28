@@ -2,3 +2,8 @@ crewai
 crewai_tools
 requests
 beautifulsoup4
+python-dotenv
+gspread
+oauth2client
+pandas
+streamlit
